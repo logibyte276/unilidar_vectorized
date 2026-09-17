@@ -1,4 +1,4 @@
-"""Unitree L1 UDP listener — vectorized point-cloud parsing.
+"""Unitree L1 UDP listener -- vectorized point-cloud parsing.
 
 Points are stored as a NumPy structured array. Legacy per-point objects are
 still available: indexing or iterating `scan.points` builds a PointUnitree on
@@ -106,7 +106,7 @@ class PointsView:
         return PointsView(self.array.copy())
 
     def tolist(self):
-        """Eager list of PointUnitree — exactly the original behaviour, on request."""
+        """Eager list of PointUnitree -- exactly the original behaviour, on request."""
         return [PointUnitree(*r.item()) for r in self.array]
 
     def __repr__(self):
@@ -138,7 +138,7 @@ class ScanUnitree:
 
 
 # --------------------------------------------------------------------------
-# Parsing helpers (no socket involved — unit-testable from raw bytes)
+# Parsing helpers (no socket involved -- unit-testable from raw bytes)
 # --------------------------------------------------------------------------
 def parse_imu(buf):
     f = IMU_MSG.unpack_from(buf, HEADER.size)
@@ -155,7 +155,7 @@ def parse_scan(buf, nbytes):
     if n > MAX_POINTS_PER_PACKET or POINTS_OFFSET + n * POINT_SIZE > nbytes:
         return None
 
-    # Zero-copy reinterpretation of the payload bytes. This ALIASES `buf` — the
+    # Zero-copy reinterpretation of the payload bytes. This ALIASES `buf` -- the
     # next recvfrom_into overwrites it. Call .copy() before keeping the scan.
     array = np.frombuffer(buf, dtype=POINT_DTYPE, count=n, offset=POINTS_OFFSET)
     return ScanUnitree(stamp, scan_id, n, PointsView(array))
